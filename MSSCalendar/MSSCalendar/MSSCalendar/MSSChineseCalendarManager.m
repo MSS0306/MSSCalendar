@@ -55,53 +55,79 @@
     if([@"正月" isEqualToString:chineseMonth] &&
        [@"初一" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"春节";
+        calendarItem.holiday = @"春节";
     }
     else if([@"正月" isEqualToString:chineseMonth] &&
             [@"十五" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"元宵";
+        calendarItem.holiday = @"元宵节";
     }
     else if([@"二月" isEqualToString:chineseMonth] &&
             [@"初二" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"龙抬头";
+        calendarItem.holiday = @"龙抬头";
     }
     else if([@"五月" isEqualToString:chineseMonth] &&
             [@"初五" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"端午";
+        calendarItem.holiday = @"端午节";
     }
     else if([@"七月" isEqualToString:chineseMonth] &&
             [@"初七" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"七夕";
+        calendarItem.holiday = @"七夕";
     }
     else if([@"八月" isEqualToString:chineseMonth] &&
             [@"十五" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"中秋";
+        calendarItem.holiday = @"中秋节";
     }
     else if([@"九月" isEqualToString:chineseMonth] &&
             [@"初九" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"重阳";
+        calendarItem.holiday = @"重阳节";
     }
     else if([@"腊月" isEqualToString:chineseMonth] &&
             [@"初八" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"腊八";
+        calendarItem.holiday = @"腊八";
     }
     else if([@"腊月" isEqualToString:chineseMonth] &&
             [@"二四" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"小年";
+        calendarItem.holiday = @"小年";
     }
     else if([@"腊月" isEqualToString:chineseMonth] &&
             [@"三十" isEqualToString:chineseDay])
     {
-        calendarItem.chineseCalendar = @"除夕";
+        calendarItem.holiday = @"除夕";
     }
 }
+
+/*
+ 清明节日期的计算 [Y*D+C]-L
+ 公式解读：Y=年数后2位，D=0.2422，L=闰年数，21世纪C=4.81，20世纪=5.59。
+ */
+- (BOOL)isQingMingholidayWithYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day
+{
+    if(month == 4)
+    {
+        NSInteger pre = year / 100;
+        float c = 4.81;
+        if(pre == 19)
+        {
+            c = 5.59;
+        }
+        NSInteger y = year % 100;
+        NSInteger qingMingDay = (y * 0.2422 + c) - y / 4;
+        if(day == qingMingDay)
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 
 @end

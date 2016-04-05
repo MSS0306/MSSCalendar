@@ -15,8 +15,7 @@
 @property (nonatomic,strong)NSDateComponents *todayCompontents;
 @property (nonatomic,strong)NSCalendar *greCalendar;
 @property (nonatomic,strong)NSDateFormatter *dateFormatter;
-// 计算农历耗性能
-//@property (nonatomic,strong)MSSChineseCalendarManager *chineseCalendarManager;
+@property (nonatomic,strong)MSSChineseCalendarManager *chineseCalendarManager;
 @end
 
 @implementation MSSCalendarManager
@@ -29,7 +28,7 @@
         _todayDate = [NSDate date];
         _todayCompontents = [self dateToComponents:_todayDate];
         _dateFormatter = [[NSDateFormatter alloc]init];
-//        _chineseCalendarManager = [[MSSChineseCalendarManager alloc]init];
+        _chineseCalendarManager = [[MSSChineseCalendarManager alloc]init];
     }
     return self;
 }
@@ -198,9 +197,12 @@
     {
         calendarItem.holiday = @"愚人节";
     }
-    else if(components.month == 4 && components.day == 5)
+    else if(components.month == 4 && (components.day == 4 || components.day == 5 || components.day == 6))
     {
-        calendarItem.holiday = @"清明节";
+        if([_chineseCalendarManager isQingMingholidayWithYear:components.year month:components.month day:components.day])
+        {
+            calendarItem.holiday = @"清明节";
+        }
     }
     else if(components.month == 5 && components.day == 1)
     {
@@ -240,7 +242,7 @@
     }
     
     // 计算农历耗性能
-    //    [_chineseCalendarManager getChineseCalendarWithDate:date calendarItem:calendarItem];
+//    [_chineseCalendarManager getChineseCalendarWithDate:date calendarItem:calendarItem];
 }
 
 #pragma mark NSDate和NSCompontents转换
