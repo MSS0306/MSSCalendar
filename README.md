@@ -36,12 +36,21 @@ headerView高度：MSS_HeaderViewHeight
 #Example
 ```Objective-c
 MSSCalendarViewController *cvc = [[MSSCalendarViewController alloc]init];
-cvc.showMonth = 36;
+cvc.limitMonth = 12 * 15;// 显示几个月的日历
+/*
+MSSCalendarViewControllerLastType 只显示当前月之前
+MSSCalendarViewControllerMiddleType 前后各显示一半
+MSSCalendarViewControllerNextType 只显示当前月之后
+*/
 cvc.type = MSSCalendarViewControllerLastType;
-cvc.beforeTodayCanTouch = YES;
-cvc.afterTodayCanTouch = NO;
-cvc.startDate = _startDate;
-cvc.endDate = _endDate;
+cvc.beforeTodayCanTouch = YES;// 今天之后的日期是否可以点击
+cvc.afterTodayCanTouch = NO;// 今天之前的日期是否可以点击
+cvc.startDate = _startDate;// 选中开始时间
+cvc.endDate = _endDate;// 选中结束时间
+/*以下两个属性设为YES,计算中国农历非常耗性能（在5s加载15年以内的数据没有影响）*/
+cvc.showChineseHoliday = YES;// 是否展示农历节日
+cvc.showChineseCalendar = YES;// 是否展示农历
+cvc.showHolidayDifferentColor = YES;// 节假日是否显示不同的颜色
 cvc.delegate = self;
 [self presentViewController:cvc animated:YES completion:nil];
 ```
