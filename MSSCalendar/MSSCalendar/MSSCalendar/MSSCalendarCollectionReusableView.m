@@ -31,18 +31,18 @@
     _headerLabel.frame = CGRectMake(10, 0, self.frame.size.width - 10, self.frame.size.height);
     _headerLabel.textAlignment = NSTextAlignmentCenter;
     _headerLabel.backgroundColor = [UIColor clearColor];
-    _headerLabel.textColor = [UIColor blackColor];
+    _headerLabel.textColor = MSS_HeaderViewTextColor;
     [headerView addSubview:_headerLabel];
     
     
     UIView *topLineView = [[UIView alloc]init];
     topLineView.frame = CGRectMake(0, 0, headerView.frame.size.width, MSS_ONE_PIXEL);
-    topLineView.backgroundColor = [UIColor lightGrayColor];
+    topLineView.backgroundColor = MSS_HeaderViewLineColor;
     [headerView addSubview:topLineView];
     
     UIView *bottomLineView = [[UIView alloc]init];
     bottomLineView.frame = CGRectMake(0, headerView.frame.size.height - MSS_ONE_PIXEL, headerView.frame.size.width, MSS_ONE_PIXEL);
-    bottomLineView.backgroundColor = [UIColor lightGrayColor];
+    bottomLineView.backgroundColor = MSS_HeaderViewLineColor;
     [headerView addSubview:bottomLineView];
 }
 

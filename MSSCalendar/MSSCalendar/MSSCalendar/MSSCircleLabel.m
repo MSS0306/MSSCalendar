@@ -16,14 +16,10 @@
     if(_isSelected)
     {
         [MSS_SelectBackgroundColor setFill];
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        [path addArcWithCenter:CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2) radius:self.frame.size.height / 2 startAngle:0.0 endAngle:180.0 clockwise:YES];
+        [path fill];
     }
-    else
-    {
-        [[UIColor whiteColor]setFill];
-    }
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    [path addArcWithCenter:CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2) radius:self.frame.size.height / 2 startAngle:0.0 endAngle:180.0 clockwise:YES];
-    [path fill];
     [super drawRect:rect];
 }
 

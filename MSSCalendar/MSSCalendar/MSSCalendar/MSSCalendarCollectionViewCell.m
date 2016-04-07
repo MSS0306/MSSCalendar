@@ -33,7 +33,6 @@
     _subLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(_dateLabel.frame), self.contentView.frame.size.width, _dateLabel.frame.size.height)];
     _subLabel.textAlignment = NSTextAlignmentCenter;
     _subLabel.font = [UIFont systemFontOfSize:10.0f];
-    _subLabel.textColor = MSS_SelectBackgroundColor;
     [self.contentView addSubview:_subLabel];
 }
 

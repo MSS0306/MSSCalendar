@@ -28,6 +28,9 @@
         _afterTodayCanTouch = YES;
         _beforeTodayCanTouch = YES;
         _dataArray = [[NSMutableArray alloc]init];
+        _showChineseCalendar = NO;
+        _showChineseHoliday = NO;
+        _showHolidayDifferentColor = NO;
     }
     return self;
 }
@@ -42,18 +45,18 @@
 - (void)initDataSource
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        MSSCalendarManager *manager = [[MSSCalendarManager alloc]init];
-        NSArray *tempDataArray = [manager getCalendarDataSoruceWithShowMonth:_showMonth type:_type];
+        MSSCalendarManager *manager = [[MSSCalendarManager alloc]initWithShowChineseHoliday:_showChineseHoliday showChineseCalendar:_showChineseCalendar startDate:_startDate];
+        NSArray *tempDataArray = [manager getCalendarDataSoruceWithLimitMonth:_limitMonth type:_type];
         dispatch_async(dispatch_get_main_queue(), ^{
             [_dataArray addObjectsFromArray:tempDataArray];
-            [self showCollectionView];
+            [self showCollectionViewWithStartIndexPath:manager.startIndexPath];
         });
     });
 }
 
 - (void)addWeakView
 {
-    UIView *weekView = [[UIView alloc]initWithFrame:CGRectMake(0, 64, MSS_SCREEN_WIDTH, 40)];
+    UIView *weekView = [[UIView alloc]initWithFrame:CGRectMake(0, 64, MSS_SCREEN_WIDTH, MSS_WeekViewHeight)];
     weekView.backgroundColor = MSS_SelectBackgroundColor;
     [self.view addSubview:weekView];
     
@@ -62,14 +65,14 @@
     NSInteger width = MSS_Iphone6Scale(54);
     for(i = 0; i < 7;i++)
     {
-        UILabel *weekLabel = [[UILabel alloc]initWithFrame:CGRectMake(i * width, 0, width, 40)];
+        UILabel *weekLabel = [[UILabel alloc]initWithFrame:CGRectMake(i * width, 0, width, MSS_WeekViewHeight)];
         weekLabel.backgroundColor = [UIColor clearColor];
         weekLabel.text = weekArray[i];
         weekLabel.font = [UIFont boldSystemFontOfSize:16.0f];
         weekLabel.textAlignment = NSTextAlignmentCenter;
         if(i == 0 || i == 6)
         {
-            weekLabel.textColor = [UIColor redColor];
+            weekLabel.textColor = MSS_WeekEndTextColor;
         }
         else
         {
@@ -79,25 +82,32 @@
     }
 }
 
-- (void)showCollectionView
+- (void)showCollectionViewWithStartIndexPath:(NSIndexPath *)startIndexPath
 {
     [self addWeakView];
-    
     [_collectionView reloadData];
-    
-    if(_type == MSSCalendarViewControllerLastType)
+    // 滚动到上次选中的位置
+    if(startIndexPath)
     {
-        if([_dataArray count] > 0)
-        {
-            [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_dataArray.count - 1] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
-        }
+        [_collectionView scrollToItemAtIndexPath:startIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+        _collectionView.contentOffset = CGPointMake(0, _collectionView.contentOffset.y - MSS_HeaderViewHeight);
     }
-    else if(_type == MSSCalendarViewControllerMiddleType)
+    else
     {
-        if([_dataArray count] > 0)
+        if(_type == MSSCalendarViewControllerLastType)
         {
-            [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:(_dataArray.count - 1) / 2] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
-            _collectionView.contentOffset = CGPointMake(0, _collectionView.contentOffset.y - 50);
+            if([_dataArray count] > 0)
+            {
+                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_dataArray.count - 1] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+            }
+        }
+        else if(_type == MSSCalendarViewControllerMiddleType)
+        {
+            if([_dataArray count] > 0)
+            {
+                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:(_dataArray.count - 1) / 2] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+                _collectionView.contentOffset = CGPointMake(0, _collectionView.contentOffset.y - MSS_HeaderViewHeight);
+            }
         }
     }
 }
@@ -109,12 +119,12 @@
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc]init];
     flowLayout.itemSize = CGSizeMake(width, height);
-    flowLayout.headerReferenceSize = CGSizeMake(MSS_SCREEN_WIDTH, 50);
+    flowLayout.headerReferenceSize = CGSizeMake(MSS_SCREEN_WIDTH, MSS_HeaderViewHeight);
     flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
     flowLayout.minimumInteritemSpacing = 0;
     flowLayout.minimumLineSpacing = 0;
     
-    _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 64 + 40, width * 7, MSS_SCREEN_HEIGHT - 64 - 40) collectionViewLayout:flowLayout];
+    _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 64 + MSS_WeekViewHeight, width * 7, MSS_SCREEN_HEIGHT - 64 - MSS_WeekViewHeight) collectionViewLayout:flowLayout];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     _collectionView.backgroundColor = [UIColor whiteColor];
@@ -142,55 +152,58 @@
     {
         MSSCalendarHeaderModel *headerItem = _dataArray[indexPath.section];
         MSSCalendarModel *calendarItem = headerItem.calendarItemArray[indexPath.row];
-        
+        cell.dateLabel.text = @"";
+        cell.dateLabel.textColor = MSS_TextColor;
+        cell.subLabel.text = @"";
+        cell.subLabel.textColor = MSS_SelectSubLabelTextColor;
+        cell.isSelected = NO;
+        cell.userInteractionEnabled = NO;
         if(calendarItem.day > 0)
         {
             cell.dateLabel.text = [NSString stringWithFormat:@"%ld",(long)calendarItem.day];
             cell.userInteractionEnabled = YES;
         }
-        else
+        if(_showChineseCalendar)
         {
-            cell.dateLabel.text = @"";
-            cell.userInteractionEnabled = NO;
+            cell.subLabel.text = calendarItem.chineseCalendar;
         }
-        // 开始日期，不等于零用来判断空的cell
-        if(calendarItem.dateInterval == _startDate && _startDate != 0)
+        
+        // 开始日期
+        if(calendarItem.dateInterval == _startDate)
         {
             cell.isSelected = YES;
-            cell.dateLabel.textColor = [UIColor whiteColor];
-            cell.subLabel.text = MSS_SelectBegintText;
+            cell.dateLabel.textColor = MSS_SelectTextColor;
+            cell.subLabel.text = MSS_SelectBeginText;
             
         }
         // 结束日期
-        else if (calendarItem.dateInterval == _endDate && _endDate != 0)
+        else if (calendarItem.dateInterval == _endDate)
         {
             cell.isSelected = YES;
-            cell.dateLabel.textColor = [UIColor whiteColor];
+            cell.dateLabel.textColor = MSS_SelectTextColor;
             cell.subLabel.text = MSS_SelectEndText;
         }
         // 开始和结束之间的日期
         else if(calendarItem.dateInterval > _startDate && calendarItem.dateInterval < _endDate)
         {
             cell.isSelected = YES;
-            cell.dateLabel.textColor = [UIColor whiteColor];
-            cell.subLabel.text = @"";
+            cell.dateLabel.textColor = MSS_SelectTextColor;
         }
         else
         {
-            cell.isSelected = NO;
-            cell.subLabel.text = @"";
+            if(calendarItem.week == 0 || calendarItem.week == 6)
+            {
+                cell.dateLabel.textColor = MSS_WeekEndTextColor;
+                cell.subLabel.textColor = MSS_WeekEndTextColor;
+            }
             if(calendarItem.holiday.length > 0)
             {
                 cell.dateLabel.text = calendarItem.holiday;
-                cell.dateLabel.textColor = [UIColor redColor];
-            }
-            else if(calendarItem.week == 0 || calendarItem.week == 6)
-            {
-                cell.dateLabel.textColor = [UIColor redColor];
-            }
-            else
-            {
-                cell.dateLabel.textColor = [UIColor blackColor];
+                if(_showHolidayDifferentColor)
+                {
+                    cell.dateLabel.textColor = MSS_HolidayTextColor;
+                    cell.subLabel.textColor = MSS_HolidayTextColor;
+                }
             }
         }
         
@@ -198,7 +211,8 @@
         {
             if(calendarItem.type == MSSCalendarNextType)
             {
-                cell.dateLabel.textColor = MSS_UTILS_COLORRGB(150, 150, 150);
+                cell.dateLabel.textColor = MSS_TouchUnableTextColor;
+                cell.subLabel.textColor = MSS_TouchUnableTextColor;
                 cell.userInteractionEnabled = NO;
             }
         }
@@ -206,7 +220,8 @@
         {
             if(calendarItem.type == MSSCalendarLastType)
             {
-                cell.dateLabel.textColor = MSS_UTILS_COLORRGB(150, 150, 150);
+                cell.dateLabel.textColor = MSS_TouchUnableTextColor;
+                cell.subLabel.textColor = MSS_TouchUnableTextColor;
                 cell.userInteractionEnabled = NO;
             }
         }

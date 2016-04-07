@@ -16,11 +16,15 @@
 @property (nonatomic,strong)NSCalendar *greCalendar;
 @property (nonatomic,strong)NSDateFormatter *dateFormatter;
 @property (nonatomic,strong)MSSChineseCalendarManager *chineseCalendarManager;
+@property (nonatomic,assign)BOOL showChineseHoliday;// 是否展示农历节日
+@property (nonatomic,assign)BOOL showChineseCalendar;// 是否展示农历
+@property (nonatomic,assign)NSInteger startDate;
+
 @end
 
 @implementation MSSCalendarManager
 
-- (instancetype)init
+- (instancetype)initWithShowChineseHoliday:(BOOL)showChineseHoliday showChineseCalendar:(BOOL)showChineseCalendar startDate:(NSInteger)startDate
 {
     self = [super init];
     {
@@ -29,11 +33,14 @@
         _todayCompontents = [self dateToComponents:_todayDate];
         _dateFormatter = [[NSDateFormatter alloc]init];
         _chineseCalendarManager = [[MSSChineseCalendarManager alloc]init];
+        _showChineseCalendar = showChineseCalendar;
+        _showChineseHoliday = showChineseHoliday;
+        _startDate = startDate;
     }
     return self;
 }
 
-- (NSArray *)getCalendarDataSoruceWithShowMonth:(NSInteger)showMonth type:(MSSCalendarViewControllerType)type
+- (NSArray *)getCalendarDataSoruceWithLimitMonth:(NSInteger)limitMonth type:(MSSCalendarViewControllerType)type
 {
     NSMutableArray *resultArray = [[NSMutableArray alloc]init];
     
@@ -45,14 +52,14 @@
     }
     else if(type == MSSCalendarViewControllerLastType)
     {
-        components.month -= showMonth;
+        components.month -= limitMonth;
     }
     else
     {
-        components.month -= (showMonth + 1) / 2;
+        components.month -= (limitMonth + 1) / 2;
     }
-    int i = 0;
-    for(i = 0;i < showMonth;i++)
+    NSInteger i = 0;
+    for(i = 0;i < limitMonth;i++)
     {
         components.month++;
         MSSCalendarHeaderModel *headerItem = [[MSSCalendarHeaderModel alloc]init];
@@ -60,14 +67,14 @@
         [_dateFormatter setDateFormat: @"yyyy年MM月"];
         NSString *dateString = [_dateFormatter stringFromDate:date];
         headerItem.headerText = dateString;
-        headerItem.calendarItemArray = [self getCalendarItemArrayWithDate:date];
+        headerItem.calendarItemArray = [self getCalendarItemArrayWithDate:date section:i];
         [resultArray addObject:headerItem];
     }
     return resultArray;
 }
 
 // 得到每一天的数据源
-- (NSArray *)getCalendarItemArrayWithDate:(NSDate *)date
+- (NSArray *)getCalendarItemArrayWithDate:(NSDate *)date section:(NSInteger)section
 {
     NSMutableArray *resultArray = [[NSMutableArray alloc]init];
     NSInteger tatalDay = [self numberOfDaysInCurrentMonth:date];
@@ -103,6 +110,7 @@
                 calendarItem.chineseCalendar = @"";
                 calendarItem.holiday = @"";
                 calendarItem.week = -1;
+                calendarItem.dateInterval = -1;
                 [resultArray addObject:calendarItem];
                 continue;
             }
@@ -117,8 +125,14 @@
             calendarItem.month = components.month;
             calendarItem.day = components.day;
             calendarItem.week = j;
-            
-            [self setChineseCalendarAndHolidayWithDate:components calendarItem:calendarItem];
+            NSDate *date = [self componentsToDate:components];
+            // 时间戳
+            calendarItem.dateInterval = [self dateToInterval:date];
+            if(_startDate == calendarItem.dateInterval)
+            {
+                _startIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
+            }
+            [self setChineseCalendarAndHolidayWithDate:components date:date calendarItem:calendarItem];
             
             [resultArray addObject:calendarItem];
         }
@@ -151,11 +165,8 @@
 }
 
 #pragma mark 农历和节假日
-- (void)setChineseCalendarAndHolidayWithDate:(NSDateComponents *)components calendarItem:(MSSCalendarModel *)calendarItem
+- (void)setChineseCalendarAndHolidayWithDate:(NSDateComponents *)components date:(NSDate *)date calendarItem:(MSSCalendarModel *)calendarItem
 {
-    NSDate *date = [self componentsToDate:components];
-    // 时间戳
-    calendarItem.dateInterval = [self dateToInterval:date];
     if (components.year == _todayCompontents.year && components.month == _todayCompontents.month && components.day == _todayCompontents.day)
     {
         calendarItem.type = MSSCalendarTodayType;
@@ -240,9 +251,11 @@
     {
         calendarItem.holiday = @"圣诞节";
     }
-    
     // 计算农历耗性能
-//    [_chineseCalendarManager getChineseCalendarWithDate:date calendarItem:calendarItem];
+    if(_showChineseCalendar || _showChineseHoliday)
+    {
+         [_chineseCalendarManager getChineseCalendarWithDate:date calendarItem:calendarItem];
+    }
 }
 
 #pragma mark NSDate和NSCompontents转换

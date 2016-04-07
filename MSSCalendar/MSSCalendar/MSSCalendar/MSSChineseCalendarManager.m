@@ -23,13 +23,13 @@
     if(self)
     {
         _chineseCalendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSChineseCalendar];
-        _chineseYearArray = [NSArray arrayWithObjects:
-                                 @"甲子", @"乙丑", @"丙寅", @"丁卯",  @"戊辰",  @"己巳",  @"庚午",  @"辛未",  @"壬申",  @"癸酉",
-                                 @"甲戌",   @"乙亥",  @"丙子",  @"丁丑", @"戊寅",   @"己卯",  @"庚辰",  @"辛己",  @"壬午",  @"癸未",
-                                 @"甲申",   @"乙酉",  @"丙戌",  @"丁亥",  @"戊子",  @"己丑",  @"庚寅",  @"辛卯",  @"壬辰",  @"癸巳",
-                                 @"甲午",   @"乙未",  @"丙申",  @"丁酉",  @"戊戌",  @"己亥",  @"庚子",  @"辛丑",  @"壬寅",  @"癸丑",
-                                 @"甲辰",   @"乙巳",  @"丙午",  @"丁未",  @"戊申",  @"己酉",  @"庚戌",  @"辛亥",  @"壬子",  @"癸丑",
-                                 @"甲寅",   @"乙卯",  @"丙辰",  @"丁巳",  @"戊午",  @"己未",  @"庚申",  @"辛酉",  @"壬戌",  @"癸亥", nil];
+//        _chineseYearArray = [NSArray arrayWithObjects:
+//                                 @"甲子", @"乙丑", @"丙寅", @"丁卯",  @"戊辰",  @"己巳",  @"庚午",  @"辛未",  @"壬申",  @"癸酉",
+//                                 @"甲戌",   @"乙亥",  @"丙子",  @"丁丑", @"戊寅",   @"己卯",  @"庚辰",  @"辛己",  @"壬午",  @"癸未",
+//                                 @"甲申",   @"乙酉",  @"丙戌",  @"丁亥",  @"戊子",  @"己丑",  @"庚寅",  @"辛卯",  @"壬辰",  @"癸巳",
+//                                 @"甲午",   @"乙未",  @"丙申",  @"丁酉",  @"戊戌",  @"己亥",  @"庚子",  @"辛丑",  @"壬寅",  @"癸丑",
+//                                 @"甲辰",   @"乙巳",  @"丙午",  @"丁未",  @"戊申",  @"己酉",  @"庚戌",  @"辛亥",  @"壬子",  @"癸丑",
+//                                 @"甲寅",   @"乙卯",  @"丙辰",  @"丁巳",  @"戊午",  @"己未",  @"庚申",  @"辛酉",  @"壬戌",  @"癸亥", nil];
         _chineseMonthArray = [NSArray arrayWithObjects:
                           @"正月", @"二月", @"三月", @"四月", @"五月", @"六月", @"七月", @"八月",
                           @"九月", @"十月", @"冬月", @"腊月", nil];
@@ -47,8 +47,14 @@
     
     NSDateComponents *localeComp = [_chineseCalendar components:unitFlags fromDate:date];
 //    NSString *chineseYear = [_chineseYearArray objectAtIndex:localeComp.year - 1];
+    NSInteger tempDay = localeComp.day;
+    // 系统日历类在2057-09-28计算有bug结果为0（应该为30）
+    if(tempDay == 0)
+    {
+        tempDay = 30;
+    }
     NSString *chineseMonth = [_chineseMonthArray objectAtIndex:localeComp.month - 1];
-    NSString *chineseDay = [_chineseDayArray objectAtIndex:localeComp.day - 1];
+    NSString *chineseDay = [_chineseDayArray objectAtIndex:tempDay - 1];
     
     calendarItem.chineseCalendar = chineseDay;
     

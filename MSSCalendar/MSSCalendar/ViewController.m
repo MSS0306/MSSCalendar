@@ -61,7 +61,7 @@
 - (void)calendarClick:(UIButton *)btn
 {
     MSSCalendarViewController *cvc = [[MSSCalendarViewController alloc]init];
-    cvc.showMonth = 36;// 显示几个月的日历
+    cvc.limitMonth = 12 * 15;// 显示几个月的日历
     /*
      MSSCalendarViewControllerLastType 只显示当前月之前
      MSSCalendarViewControllerMiddleType 前后各显示一半
@@ -72,6 +72,10 @@
     cvc.afterTodayCanTouch = NO;// 今天之前的日期是否可以点击
     cvc.startDate = _startDate;// 选中开始时间
     cvc.endDate = _endDate;// 选中结束时间
+    /*以下两个属性设为YES,计算中国农历非常耗性能（在5s加载15年以内的数据没有影响）*/
+    cvc.showChineseHoliday = YES;// 是否展示农历节日
+    cvc.showChineseCalendar = YES;// 是否展示农历
+    cvc.showHolidayDifferentColor = YES;// 节假日是否显示不同的颜色
     cvc.delegate = self;
     [self presentViewController:cvc animated:YES completion:nil];
 }
@@ -80,18 +84,10 @@
 {
     _startDate = startDate;
     _endDate = endDate;
-    NSString *startDateString = @"";
-    NSString *endDateString = @"";
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
     [dateFormatter setDateFormat: @"yyyy-MM-dd"];
-    if(_startDate != 0)
-    {
-        startDateString = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_startDate]];
-    }
-    if(_endDate != 0)
-    {
-        endDateString = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_endDate]];
-    }
+    NSString *startDateString = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_startDate]];
+    NSString *endDateString = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_endDate]];
     _startLabel.text = [NSString stringWithFormat:@"开始日期:%@",startDateString];
     _endLabel.text = [NSString stringWithFormat:@"结束日期:%@",endDateString];
 }

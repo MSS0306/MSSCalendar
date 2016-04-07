@@ -10,7 +10,10 @@
 #import "MSSCalendarViewController.h"
 @interface MSSCalendarManager : NSObject
 
-// 数据源
-- (NSArray *)getCalendarDataSoruceWithShowMonth:(NSInteger)showMonth type:(MSSCalendarViewControllerType)type;
+- (instancetype)initWithShowChineseHoliday:(BOOL)showChineseHoliday showChineseCalendar:(BOOL)showChineseCalendar startDate:(NSInteger)startDate;
+// 获取数据源
+- (NSArray *)getCalendarDataSoruceWithLimitMonth:(NSInteger)limitMonth type:(MSSCalendarViewControllerType)type;
+
+@property (nonatomic,strong)NSIndexPath *startIndexPath;
 
 @end
