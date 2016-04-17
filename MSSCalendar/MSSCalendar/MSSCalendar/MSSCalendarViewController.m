@@ -11,11 +11,13 @@
 #import "MSSCalendarHeaderModel.h"
 #import "MSSCalendarManager.h"
 #import "MSSCalendarCollectionReusableView.h"
+#import "MSSCalendarPopView.h"
 #import "MSSCalendarDefine.h"
 
 @interface MSSCalendarViewController ()
 @property (nonatomic,strong)UICollectionView *collectionView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
+@property (nonatomic,strong)MSSCalendarPopView *popView;
 @end
 
 @implementation MSSCalendarViewController
@@ -31,6 +33,7 @@
         _showChineseCalendar = NO;
         _showChineseHoliday = NO;
         _showHolidayDifferentColor = NO;
+        _showAlertView = NO;
     }
     return self;
 }
@@ -245,20 +248,18 @@
 {
     MSSCalendarHeaderModel *headerItem = _dataArray[indexPath.section];
     MSSCalendarModel *calendaItem = headerItem.calendarItemArray[indexPath.row];
-    if(_startDate == calendaItem.dateInterval)
-    {
-        return;
-    }
     // 当开始日期为空时
     if(_startDate == 0)
     {
         _startDate = calendaItem.dateInterval;
+        [self showPopViewWithIndexPath:indexPath];
     }
     // 当开始日期和结束日期同时存在时(点击为重新选时间段)
     else if(_startDate > 0 && _endDate > 0)
     {
         _startDate = calendaItem.dateInterval;
         _endDate = 0;
+        [self showPopViewWithIndexPath:indexPath];
     }
     else
     {
@@ -270,14 +271,56 @@
             {
                 [_delegate calendarViewConfirmClickWithStartDate:_startDate endDate:_endDate];
             }
+            [_popView removeFromSuperview];
+            _popView = nil;
             [self dismissViewControllerAnimated:YES completion:nil];
         }
         else
         {
             _startDate = calendaItem.dateInterval;
+            [self showPopViewWithIndexPath:indexPath];
         }
     }
     [_collectionView reloadData];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if(_popView)
+    {
+        [_popView removeFromSuperview];
+        _popView = nil;
+    }
+}
+
+- (void)showPopViewWithIndexPath:(NSIndexPath *)indexPath;
+{
+    if(_showAlertView)
+    {
+        [_popView removeFromSuperview];
+        _popView = nil;
+        
+        MSSCalendarPopViewArrowPosition arrowPostion = MSSCalendarPopViewArrowPositionMiddle;
+        NSInteger position = indexPath.row % 7;
+        if(position == 0)
+        {
+            arrowPostion = MSSCalendarPopViewArrowPositionLeft;
+        }
+        else if(position == 6)
+        {
+            arrowPostion = MSSCalendarPopViewArrowPositionRight;
+        }
+        
+        MSSCalendarCollectionViewCell *cell = (MSSCalendarCollectionViewCell *)[_collectionView cellForItemAtIndexPath:indexPath];
+        _popView = [[MSSCalendarPopView alloc]initWithSideView:cell.dateLabel arrowPosition:arrowPostion];
+        _popView.topLabelText = [NSString stringWithFormat:@"请选择%@日期",MSS_SelectEndText];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+        [dateFormatter setDateFormat:@"MM月dd日"MSS_SelectBeginText];
+        NSString *startDateString = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:_startDate]];
+        _popView.bottomLabelText = startDateString;
+        [_popView showWithAnimation];
+    }
 }
 
 @end

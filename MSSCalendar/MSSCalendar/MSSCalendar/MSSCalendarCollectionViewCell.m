@@ -25,7 +25,7 @@
     _imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
     [self.contentView addSubview:_imageView];
     
-    _dateLabel = [[MSSCircleLabel alloc]initWithFrame:CGRectMake(0, MSS_Iphone6Scale(10), self.contentView.frame.size.width, self.frame.size.height / 2 - MSS_Iphone6Scale(10))];
+    _dateLabel = [[MSSCircleLabel alloc]initWithFrame:CGRectMake(10, MSS_Iphone6Scale(10), self.contentView.frame.size.width - 10 * 2, self.frame.size.height / 2 - MSS_Iphone6Scale(10))];
     _dateLabel.textAlignment = NSTextAlignmentCenter;
     _dateLabel.font = [UIFont systemFontOfSize:13.0f];
     [self.contentView addSubview:_dateLabel];

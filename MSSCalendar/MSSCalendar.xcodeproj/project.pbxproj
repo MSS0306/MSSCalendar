@@ -10,6 +10,7 @@
 		40D3946B1CB2130400ECF20D /* MSSChineseCalendarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3946A1CB2130400ECF20D /* MSSChineseCalendarManager.m */; };
 		40D3946E1CB23B0700ECF20D /* MSSCalendarHeaderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3946D1CB23B0700ECF20D /* MSSCalendarHeaderModel.m */; };
 		40D394721CB24D6600ECF20D /* MSSCircleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D394711CB24D6600ECF20D /* MSSCircleLabel.m */; };
+		40D6199B1CC3671400A531EA /* MSSCalendarPopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D6199A1CC3671400A531EA /* MSSCalendarPopView.m */; };
 		40F521631CB10EBF006FFA37 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 40F521621CB10EBF006FFA37 /* main.m */; };
 		40F521661CB10EBF006FFA37 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 40F521651CB10EBF006FFA37 /* AppDelegate.m */; };
 		40F521691CB10EBF006FFA37 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40F521681CB10EBF006FFA37 /* ViewController.m */; };
@@ -30,6 +31,8 @@
 		40D3946F1CB23FD300ECF20D /* MSSCalendarDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSSCalendarDefine.h; sourceTree = "<group>"; };
 		40D394701CB24D6600ECF20D /* MSSCircleLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSCircleLabel.h; sourceTree = "<group>"; };
 		40D394711CB24D6600ECF20D /* MSSCircleLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSCircleLabel.m; sourceTree = "<group>"; };
+		40D619991CC3671400A531EA /* MSSCalendarPopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSCalendarPopView.h; sourceTree = "<group>"; };
+		40D6199A1CC3671400A531EA /* MSSCalendarPopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSCalendarPopView.m; sourceTree = "<group>"; };
 		40F5215E1CB10EBF006FFA37 /* MSSCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSSCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F521621CB10EBF006FFA37 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		40F521641CB10EBF006FFA37 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -120,6 +123,8 @@
 				40F521861CB10FF8006FFA37 /* MSSCalendarCollectionReusableView.m */,
 				40D394701CB24D6600ECF20D /* MSSCircleLabel.h */,
 				40D394711CB24D6600ECF20D /* MSSCircleLabel.m */,
+				40D619991CC3671400A531EA /* MSSCalendarPopView.h */,
+				40D6199A1CC3671400A531EA /* MSSCalendarPopView.m */,
 			);
 			path = MSSCalendar;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				40D3946B1CB2130400ECF20D /* MSSChineseCalendarManager.m in Sources */,
 				40F521811CB10FB7006FFA37 /* MSSCalendarViewController.m in Sources */,
 				40D394721CB24D6600ECF20D /* MSSCircleLabel.m in Sources */,
+				40D6199B1CC3671400A531EA /* MSSCalendarPopView.m in Sources */,
 				40F5217B1CB10F52006FFA37 /* MSSCalendarManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

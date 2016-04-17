@@ -22,6 +22,8 @@ SubLabel选中结束文字：MSS_SelectEndText<br/>
 headerView线颜色：MSS_HeaderViewLineColor<br/>
 headerView文字颜色：MSS_HeaderViewTextColor<br/>
 headerView高度：MSS_HeaderViewHeight
+弹出层文字颜色 MSS_CalendarPopViewTextColor
+弹出层背景颜色 MSS_CalendarPopViewBackgroundColor
 
 # 版本1.0
 1.可设置日历显示多少个月<br/>
@@ -31,7 +33,10 @@ headerView高度：MSS_HeaderViewHeight
 # 版本1.1
 1.可设置是否显示农历及其节假日<br/>
 2.直接滚动到当前选中日期<br/>
-3.宏定义更多属性进行修改值
+3.宏定义更多属性进行修改值<br/>
+
+# 版本1.2
+1.添加提示弹窗<br/>
 
 #Example
 ```Objective-c
@@ -51,6 +56,7 @@ cvc.endDate = _endDate;// 选中结束时间
 cvc.showChineseHoliday = YES;// 是否展示农历节日
 cvc.showChineseCalendar = YES;// 是否展示农历
 cvc.showHolidayDifferentColor = YES;// 节假日是否显示不同的颜色
+cvc.showAlertView = YES;// 是否显示提示弹窗
 cvc.delegate = self;
 [self presentViewController:cvc animated:YES completion:nil];
 ```

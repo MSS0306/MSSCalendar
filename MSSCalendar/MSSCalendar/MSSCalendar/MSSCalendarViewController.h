@@ -34,4 +34,6 @@ typedef NS_ENUM(NSInteger, MSSCalendarViewControllerType)
 @property (nonatomic,assign)BOOL showChineseCalendar;// 是否展示农历
 @property (nonatomic,assign)BOOL showHolidayDifferentColor;// 节假日是否宣示不同的颜色
 
+@property (nonatomic,assign)BOOL showAlertView;// 是否显示提示弹窗
+
 @end
