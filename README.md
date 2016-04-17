@@ -21,9 +21,9 @@ SubLabel选中结束文字：MSS_SelectEndText<br/>
 周视图高度：MSS_WeekViewHeight<br/>
 headerView线颜色：MSS_HeaderViewLineColor<br/>
 headerView文字颜色：MSS_HeaderViewTextColor<br/>
-headerView高度：MSS_HeaderViewHeight
-弹出层文字颜色 MSS_CalendarPopViewTextColor
-弹出层背景颜色 MSS_CalendarPopViewBackgroundColor
+headerView高度：MSS_HeaderViewHeight<br/>
+弹出层文字颜色 MSS_CalendarPopViewTextColor<br/>
+弹出层背景颜色 MSS_CalendarPopViewBackgroundColor<br/>
 
 # 版本1.0
 1.可设置日历显示多少个月<br/>
