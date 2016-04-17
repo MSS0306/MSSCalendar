@@ -73,7 +73,7 @@ static const CGFloat CalendarPopViewAlpha = 0.5f;
 // 获取指定视图在window中的位置
 - (CGRect)getFrameInWindow:(UIView *)view
 {
-    return [view.superview convertRect:view.frame toView:[UIApplication sharedApplication].keyWindow.rootViewController.view];
+    return [view.superview convertRect:view.frame toView:[UIApplication sharedApplication].keyWindow];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -92,7 +92,7 @@ static const CGFloat CalendarPopViewAlpha = 0.5f;
 {
     if(_arrowPosition == MSSCalendarPopViewArrowPositionLeft)
     {
-        _drawArrowStartX = _sideViewInWindowRect.size.width / 2;
+        _drawArrowStartX = _sideViewInWindowRect.size.width / 2 - 10;
     }
     else if(_arrowPosition == MSSCalendarPopViewArrowPositionMiddle)
     {
@@ -100,7 +100,7 @@ static const CGFloat CalendarPopViewAlpha = 0.5f;
     }
     else
     {
-        _drawArrowStartX = self.frame.size.width - _sideViewInWindowRect.size.width / 2;
+        _drawArrowStartX = self.frame.size.width - _sideViewInWindowRect.size.width / 2 + 10;
     }
     CGRect oldRect = self.frame;
     self.layer.anchorPoint = CGPointMake(_drawArrowStartX / self.frame.size.width, 1.0);
@@ -130,7 +130,7 @@ static const CGFloat CalendarPopViewAlpha = 0.5f;
     CGFloat x = 0.0f;
     if(_arrowPosition == MSSCalendarPopViewArrowPositionLeft)
     {
-        x = _sideViewInWindowRect.origin.x;
+        x = _sideViewInWindowRect.origin.x + 10;
     }
     else if(_arrowPosition == MSSCalendarPopViewArrowPositionMiddle)
     {
@@ -138,7 +138,7 @@ static const CGFloat CalendarPopViewAlpha = 0.5f;
     }
     else
     {
-        x = _sideViewInWindowRect.origin.x + _sideViewInWindowRect.size.width - width;
+        x = _sideViewInWindowRect.origin.x + _sideViewInWindowRect.size.width - width - 10;
     }
     CGFloat height = 50.0f;
     self.frame = CGRectMake(x, _sideViewInWindowRect.origin.y - height - CalendarPopViewArrowHeight, width, height + CalendarPopViewArrowHeight);
