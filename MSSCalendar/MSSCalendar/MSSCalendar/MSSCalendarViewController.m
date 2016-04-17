@@ -45,6 +45,16 @@
     [self createUI];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if(_popView)
+    {
+        [_popView removeFromSuperview];
+        _popView = nil;
+    }
+}
+
 - (void)initDataSource
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -271,8 +281,6 @@
             {
                 [_delegate calendarViewConfirmClickWithStartDate:_startDate endDate:_endDate];
             }
-            [_popView removeFromSuperview];
-            _popView = nil;
             [self dismissViewControllerAnimated:YES completion:nil];
         }
         else
