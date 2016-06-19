@@ -3,9 +3,6 @@ A simple iOS Calendar 一款简单高性能的日历（类似去哪网）
 
 ![效果图](https://raw.githubusercontent.com/MSS0306/MSSCalendar/master/calendar.gif)
 
-# 联系
-iOS开发技术交流群:529043462
-
 # 说明
 一款高性能的日历控件<br/>
 MSSCalendarDefine.h中可设置相应文字和颜色<br/>
